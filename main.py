@@ -2,6 +2,7 @@ import tkinter as tk
 import time
 import random
 
+
 class TypingSpeedTestApp:
     def __init__(self, master):
         self.master = master
@@ -42,13 +43,16 @@ class TypingSpeedTestApp:
 
     def update_typing_speed(self):
         if self.typing_start_time:
-            typing_time = time.time() - self.typing_start_time
             typed_text = self.entry.get()
-            typed_words = typed_text.split()
+            new_typed_text = typed_text[len(self.last_typed_text):]
+            original_text = self.sentences[self.current_sentence_index]
+            correct_chars = sum(1 for c1, c2 in zip(new_typed_text, original_text) if c1 == c2)
+            typing_time = time.time() - self.typing_start_time
             if typing_time > 0:
-                typing_speed = len(typed_words) / (typing_time / 60)
+                typing_speed = (correct_chars / len(original_text)) / (typing_time / 60)
                 self.typing_speed_label.config(text=f"Typing speed: {typing_speed:.2f} WPM")
         self.master.after(100, self.update_typing_speed)
+        self.last_typed_text = self.entry.get()
 
     def stop_typing_test(self, event):
         if self.typing_start_time:
@@ -66,11 +70,13 @@ class TypingSpeedTestApp:
         self.typing_start_time = None
         self.typing_speed_label.config(text="Typing speed: 0 WPM")
 
+
 def main():
     root = tk.Tk()
     app = TypingSpeedTestApp(root)
     root.bind("<Return>", app.stop_typing_test)
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()
