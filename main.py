@@ -62,6 +62,7 @@ class TypingSpeedTestApp:
 
     def next_sentence(self):
         self.display_next_sentence()
+        self.entry.delete(0, tk.END)
         self.typing_start_time = None
         self.typing_speed_label.config(text="Typing speed: 0 WPM")
 
